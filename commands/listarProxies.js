@@ -4,7 +4,7 @@ const fs = require('fs');
 const execute = async (message, client, args) => {
     const json = fs.readFileSync(process.cwd() + '/proxies.json', 'utf8');
     const proxies = JSON.parse(json);
-    proxyList = '```Proxies:';
+    proxyList = `\`\`\`Proxies: (${proxies.length} total)`;
     proxies.forEach(proxy => {
         proxyList+= `\n${proxy.i}:${proxy.p}`
     });
