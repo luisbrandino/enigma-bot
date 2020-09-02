@@ -13,7 +13,10 @@ const execute = async (message, client, args) => {
 !adicionar <ip>:<porta> - Adicionar proxy à lista
     - 📥 Proxy OK!
     - 📤 Proxy não funcionou
-    - ⚠️ Proxy já usada`
+    - ⚠️ Proxy já usada
+
+Bot criado por Mafios#1972 e brandino#1300
+`
     );
 }
 
