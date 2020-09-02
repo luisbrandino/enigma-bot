@@ -1,23 +1,48 @@
 const Discord = require("discord.js");
+const fs = require('fs');
 
 require('dotenv').config();
 
 const client = new Discord.Client();
+client.commands = new Discord.Collection();
 
-const prefix = "!";
+// carregando comandos
+fs.readdir('./commands', (err, files) => {
+    if (err) return console.log(`Erro ao carregar os comandos: ${err}`);
 
-client.on("message", function(message) {
-  if (message.author.bot) return;
-  if (!message.content.startsWith(prefix)) return;
+    files.forEach(file => {
+        if (!file.endsWith('.js')) return;
 
-  const commandBody = message.content.slice(prefix.length);
-  const args = commandBody.split(' ');
-  const command = args.shift().toLowerCase();
+        try {
+            console.log(`Carregando comando ${file}...`)
 
-  if (command === "ping") {
-    const timeTaken = Date.now() - message.createdTimestamp;
-    message.reply(`Pong! This message had a latency of ${timeTaken}ms.`);
-  }
+            const command = require(`./commands/${file}`);
+
+            client.commands.set(command.name, command);
+        } catch (err) {
+            console.log(`Erro ao carregar comando ${file}: ${err}`);
+        }
+    })
 });
+
+// carregando eventos
+fs.readdir('./events', (err, files) => {
+    if (err) return console.log(`Erro ao carregar os eventos: ${err}`);
+
+    files.forEach(file => {
+        if (!file.endsWith('.js')) return;
+
+        const eventName = file.replace('.js', '');
+
+        try {
+            console.log(`Carregando evento ${eventName}...`)
+
+            client.on(eventName, message => { require(`./events/${file}`)(client, message) });
+        } catch (err) {
+            console.log(`Erro ao carregar evento ${eventName}: ${err}`);
+        }
+    });
+});
+
 
 client.login(process.env.token);
