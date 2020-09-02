@@ -4,7 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+<<<<<<< HEAD
     "start": "nodemon index.js"
+=======
+    "test": "node index.js",
+    "dev": "nodemon index.js"
+>>>>>>> 17b7c10e46e3bf9c97e426488be43714f1ce0f9a
   },
   "repository": {
     "type": "git",
