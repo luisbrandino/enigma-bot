@@ -1,5 +1,10 @@
 const { prefix } = require('../config.json');
 
+const msgMax = 3;
+const segMax = 30;
+    
+reqs = {}
+
 module.exports = async (client, message) => {
     if (message.author.bot) return;
     if (!message.content.startsWith(prefix)) return;
@@ -9,5 +14,18 @@ module.exports = async (client, message) => {
     const command = args.shift().toLowerCase();
 
     const cmd = client.commands.get(command);
-    if (cmd) cmd.execute(message, args);
+    
+    // Anti-spam
+    if (!cmd) return;
+
+    id = message.author.id;
+    if (!reqs[id]) reqs[id] = [];
+    reqs[id] = reqs[id].filter(data=>data>+new Date-(segMax*1000))
+    if (reqs[id].length >= msgMax) {
+        message.react('🕒');
+        message.channel.send(`Sem spam! máximo: ${msgMax}msg/${segMax}s`);
+    } else {
+        reqs[id].push(+new Date);
+        cmd.execute(message, client, args);
+    }
 }
