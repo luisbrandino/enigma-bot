@@ -8,5 +8,6 @@ module.exports = async (client, message) => {
     const args = commandBody.split(' ');
     const command = args.shift().toLowerCase();
 
-    client.commands.get(command).execute(message, args);
+    const cmd = client.commands.get(command);
+    if (cmd) cmd.execute(message, args);
 }
