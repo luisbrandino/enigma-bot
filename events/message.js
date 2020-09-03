@@ -1,11 +1,12 @@
-const { prefix } = require('../config.json');
+const config = require('../config.json');
 
-const msgMax = 3;
-const segMax = 25;
-    
 reqs = {}
 
 module.exports = async (client, message) => {
+    const { prefix, antispam } = require('../config.json');
+    const msgMax = parseInt(antispam.split('/')[0]);
+    const segMax = parseInt(antispam.split('/')[1]);
+
     if (message.author.bot) return;
     if (!message.content.startsWith(prefix)) return;
 
@@ -17,6 +18,10 @@ module.exports = async (client, message) => {
     
     // Anti-spam
     if (!cmd) return;
+
+    const author = message.author;
+
+    if (config.bans.includes(author.id)) return message.react('🚫');
 
     id = message.author.id;
     if (!reqs[id]) reqs[id] = [];

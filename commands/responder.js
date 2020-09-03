@@ -3,6 +3,8 @@ const axios = require('axios');
 const qs = require('qs')
 const fs = require('fs');
 
+const config = require('../config.json');
+
 const enigmaUrl = 'http://colherelerda.com/';
 const enigmaPath = '/chr/f/g.php';
 
@@ -74,15 +76,31 @@ const execute = async (message, client, args) =>  {
 
     if (response==='Proxies banidas') {
         return message.channel.send('🕒 Todas as proxies tomaram timeout.\n'
-                            + 'Adicione novas ou aguarde alguns minutos');
+                            + 'Adicione novas, teste no seu navegador ou aguarde alguns minutos...');
     }
 
-    await message.reactions.removeAll();
+    try {
+        await message.reactions.removeAll();
+    } catch (err) {
+        console.log('Erro: ' + err);
+    }
 
     const h1 = /<h1>(.*?)<\/h1>/g.exec(response.response.data)[1];
     if (h1.includes('Pense mais.')) {
         await message.react('❌');
     } else {
+        // salva a resposta no respostas.json
+        const resposta = h1;
+        const respostas = JSON.parse(fs.readFileSync(process.cwd() + '/respostas.json'));
+
+        if (!respostas[resposta]) respostas[resposta] = []; // se nao houver aquela resposta cria uma nova
+
+        if (!respostas[resposta].includes(pass)) respostas[resposta].push(pass); // se nao houver a palavra na resposta adiciona
+
+        const data = JSON.stringify(respostas);
+
+        fs.writeFileSync(process.cwd() + '/respostas.json', data);
+
         message.channel.send(`R: ${h1}`);
         await message.react('✅');
     }
