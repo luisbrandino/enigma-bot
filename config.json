@@ -1,1 +1,8 @@
-{"prefix":"!","bans":[],"activeUsers":[],"antispam":"3/25"}
+{
+    "prefix": "!",
+    "bans": [],
+    "activeUsers": [],
+    "antispam": "3/25",
+    "commandChannelId": "750699222902374400",
+    "proxiesChannelId": "751032985746407515"
+}

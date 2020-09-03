@@ -19,6 +19,8 @@ module.exports = async (client, message) => {
     // Anti-spam
     if (!cmd) return;
 
+    if (message.channel.id != config.commandChannelId) return message.channel.send('Utilize o bot no canal de comandos');
+
     const author = message.author;
 
     if (config.bans.includes(author.id)) return message.react('🚫');

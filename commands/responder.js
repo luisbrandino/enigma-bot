@@ -61,13 +61,21 @@ const execute = async (message, client, args) =>  {
         } catch (err) {   
             if (err.message.includes('code 303')) return err;
             if (err.message!=='IP bloqueado') { // = proxy morta
+                const proxyChannel = client.channels.cache.get(config.proxiesChannelId);
+
                 const json = fs.readFileSync(process.cwd() + '/proxies.json', 'utf8');
                 var newProxies = JSON.parse(json);
                 const proxyRemovida = newProxies.splice(proxyId, 1)[0];
                 const data = JSON.stringify(newProxies);
                 fs.writeFileSync(process.cwd() + '/proxies.json', data);
-                message.channel.send(`⚠️ Aviso: Proxy (${proxyRemovida.i}:${proxyRemovida.p}) foi removida.\nTente adiciona-la novamente mais tarde...`);
-            }
+
+                if (proxyChannel) {
+                    proxyChannel.send(`⚠️ Aviso: Proxy (${proxyRemovida.i}:${proxyRemovida.p}) foi removida.\nTente adicioná-la novamente mais tarde...`);
+                } else {
+                    message.channel.send(`⚠️ Aviso: Proxy (${proxyRemovida.i}:${proxyRemovida.p}) foi removida.\nTente adicioná-la novamente mais tarde...`);
+                }
+           }
+
             return await r(); 
         }     
     } 
